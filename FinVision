@@ -1,0 +1,351 @@
+#Import .csv File containing Financial Data
+import csv
+with open('C:/Users/91891/OneDrive/Desktop/FINDAT 16-24 - FINAL DATASET.csv', newline='') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(row)
+
+#Import necessary libraries
+import csv
+import pandas as pd
+
+#Import.csv File containing Financial Data
+data = pd.read_csv('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv')
+import csv
+
+import pandas as pd
+
+# Load the dataset
+data = pd.read_csv('C:/Users/91891/OneDrive/Desktop/FINDAT 16-24 - FINAL DATASET.csv')
+
+# Slice the DataFrame from row 2 to the end
+data = data.iloc[1:, :]
+
+# Display the first 5 rows of the sliced DataFrame
+print(data.head())
+
+print(data)
+
+#Convert the Date column to a float variable
+import pandas as pd
+
+# load the CSV file into a DataFrame
+data = pd.read_csv('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv')
+
+# print the column names
+print(data.columns)
+
+# access the 'row[1:]' column
+if 'row' in data and not isinstance(data['row'], (list, tuple)):
+    data['row'] = [data['row']]
+
+
+print("STEP-1 COMPLETE")
+
+
+import pandas as pd
+
+file_path = "C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"
+data = pd.read_csv(file_path, skiprows=1)
+
+# Ensure the 'Date' column exists before attempting to convert
+if 'Date' in data.columns:
+    data['Date'] = pd.to_numeric(data['Date'], errors='coerce')
+    # Handle potential NaN values resulting from coercion
+    data['Date'].fillna(data['Date'].mean(), inplace=True)  # or some other suitable fill method
+else:
+    print("Warning: 'Date' column not found in the data.")
+
+#Print the first 5 rows of the cleaned data
+print(data.head())
+
+#Import.csv File containing Financial Data
+data = pd.read_csv('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv')
+
+#Remove any rows with missing values
+data = data.dropna()
+
+#Convert categorical variables into dummy/indicator variables
+data = pd.get_dummies(data)
+
+#Print the first 5 rows of the cleaned data
+print(data.head())
+# Convert string to float
+def convert_string_to_float(x):
+    try:
+        return float(x.strip())
+    except ValueError:
+        return np.nan
+import csv
+
+# Open the CSV file and read its contents
+with open('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv', 'r') as csvfile:
+    # Create a CSV reader object
+    csvreader = csv.reader(csvfile)
+
+    # Loop through each row in the CSV file
+    for row in csvreader:
+# Convert the string to a float and store it in a variable
+        def convert_value_to_float(row):
+            try:
+                return float(row[0].strip())
+            except ValueError:
+                print(f"Error: Cannot convert '{row[0]}' to float.")
+                return None  # or some other default value
+print("STEP-2 COMPLETE")
+
+input_string = "C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"
+def convert_string_to_float(x):
+    try:
+        return float(x.strip())
+    except ValueError:
+        return 0.0  # or some other default value
+#Clean Data
+import pandas as pd
+data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+data.dropna(inplace=True)
+data.drop_duplicates(inplace=True)
+data = data.applymap(lambda x: x.lower() if isinstance(x, str) else x)
+data = data.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+data.to_csv("cleaned_data.csv", index=False)
+#Differencing
+import pandas as pd
+data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+import pandas as pd
+df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+df = pd.get_dummies(df, drop_first=True)
+df = df.fillna(df.mean())
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+
+print("STEP-3 COMPLETE")
+
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+# Load the dataset from the file path
+df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+
+def scale_dataframe(df):
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("Input must be a DataFrame.")
+    scaler = MinMaxScaler()
+    return pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+df_scaled = scale_dataframe(df)
+
+y = df_scaled['Shares Traded']
+X = df_scaled.drop('Shares Traded', axis=1)
+
+print("STEP-4 COMPLETE")
+
+import numpy as np
+
+X_1d = X.values.reshape(-1)
+
+def convert_string_to_float(x: str) -> float:
+    """
+    Convert a string to a float, returning NaN on failure.
+    """
+    try:
+        return float(x.strip())
+    except ValueError:
+        return np.nan
+
+
+#Converts the first element of a row to a float.
+#If the conversion is not possible, prints an error message and returns None.
+
+    try:
+        return float(row[0].strip())
+    except ValueError:
+        print(f"Error: Cannot convert '{row[0]}' to float.")
+        return None  # or some other default value
+
+        def skip_first_column(data):
+#Skips the first column of each row in the input data.
+
+            if not isinstance(data, list):
+                raise TypeError("Input data must be a list.")
+            for row in data:
+                if not isinstance(row, list):
+                    raise TypeError(f"Each element in data must be a list. Found non-list element: {row}")
+            return [row[1:] for row in data if row]
+# Import necessary libraries0
+
+import pandas as pd
+import numpy as np
+
+# Load the data into a DataFrame
+df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+df = df.applymap(convert_string_to_float)
+
+#Preprocess for modelling
+import pandas as pd
+data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+data['Date'] = pd.to_datetime(data['Date'])
+data.set_index('Date', inplace=True)
+
+#Introduce Modelling system ARIMA
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima_model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv", index_col='Date', parse_dates=True)
+
+# Check for any missing values
+if data.isnull().values.any():
+    print("Data contains missing values. Please handle them before proceeding.")
+else:
+    print("Data does not contain any missing values.")
+
+if data.duplicated().any():
+    print("Data contains duplicate values. Please handle them before proceeding.")
+else:
+    print("Data does not contain any duplicate values.")
+
+# Check for any outliers
+q1 = data.quantile(0.25)
+q3 = data.quantile(0.75)
+iqr = q3 - q1
+lower_bound = q1 - 1.5 * iqr
+upper_bound = q3 + 1.5 * iqr
+
+if data[(data < lower_bound) | (data > upper_bound)].any().any():
+    print("Data contains outliers. Please handle them before proceeding.")
+else:
+    print("Data does not contain any outliers.")
+
+from statsmodels.tsa.stattools import adfuller
+
+def test_stationarity(timeseries):
+    print('Results of Dickey-Fuller Test:')
+    dftest = adfuller(timeseries, autolag='AIC')
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
+    for key, value in dftest[4].items():
+        dfoutput['Critical Value (%s)' % key] = value
+    print(dfoutput)
+
+test_stationarity(data)
+
+if data[0]!= 0:
+    data_diff = data.diff().dropna()
+    test_stationarity(data_diff)
+else:
+    print("Data is already stationary.")
+
+# Train the ARIMA model
+model = ARIMA(data_diff, order=(5,1,0))
+model_fit = model.fit()
+
+data_diff = ["C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"] 
+test = ["C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"]   
+
+total_length = len(data_diff) + len(test)
+
+# Make predictions
+predictions = model_fit.predict(
+    start=len(data_diff), 
+    end=len(data_diff) + len(test), 
+    typ='levels'
+)
+
+# Evaluate the model
+from sklearn.metrics import mean_squared_error
+mse = mean_squared_error(y_true=test, y_pred=predictions)
+print(f"Test MSE: {mse:.3f}")
+
+#Run Diagnostics on data differencing and Analysis, improve any faults ASAP
+import pandas as pd
+df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
+print(df.head())
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot
+from statsmodels.tsa.arima_model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+
+data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv", index_col='Date', parse_dates=True)
+print("Missing values: ", data.isnull().sum())
+differenced_data = data.diff().dropna()
+model = ARIMA(differenced_data, order=(5,1,0))
+model_fit = model.fit()
+
+predictions = model_fit.forecast(steps=len(test))
+mse = mean_squared_error(y_true=test, y_pred=predictions)
+print(f"Test MSE: {mse:.3f}")
+
+# Plot the original data and the predictions to visually inspect the fit
+pyplot.plot(data)
+pyplot.plot(predictions, color='red')
+pyplot.show()
+
+# Load the dataset
+import pandas as pd
+
+file_path = "C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"
+data = pd.read_csv(file_path, index_col='Date', parse_dates=True)
+
+if data.isnull().values.any():
+    print("Data contains missing values. Please handle them before proceeding.")
+else:
+    print("Data does not contain any missing values.")
+
+# Check for any duplicate values
+if data.duplicated().any():
+    print("Data contains duplicate values. Please handle them before proceeding.")
+else:
+    print("Data does not contain any duplicate values.")
+
+# Check for any outliers
+q1 = data.quantile(0.25)
+q3 = data.quantile(0.75)
+iqr = q3 - q1
+lower_bound = q1 - 1.5 * iqr
+upper_bound = q3 + 1.5 * iqr
+
+if data[(data < lower_bound) | (data > upper_bound)].any().any():
+    print("Data contains outliers. Please handle them before proceeding.")
+else:
+    print("Data does not contain any outliers.")
+
+# Check for stationarity
+        #Import Statsmodels using something i dont know about
+import statsmodels
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.stattools import adfuller
+
+def test_stationarity(timeseries):
+    print('Results of Dickey-Fuller Test:')
+    dftest = adfuller(timeseries, autolag='AIC')
+    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
+    for key, value in dftest[4].items():
+        dfoutput['Critical Value (%s)' % key] = value
+    print(dfoutput)
+
+test_stationarity(data)
+
+# If the data is not stationary, perform differencing
+if data[0]!= 0:
+    data_diff = data.diff().dropna()
+    test_stationarity(data_diff)
+else:
+    print("Data is already stationary.")
+
+# Train the ARIMA model
+model = ARIMA(data_diff, order=(5,1,0))
+model_fit = model.fit()
+
+# Make predictions
+predictions = model_fit.predict(start=len(data_diff), end=len(data_diff)+len(test), typ='levels')
+
+# Evaluate the model
+from sklearn.metrics import mean_squared_error
+mse = mean_squared_error(test, predictions)
+
+print('Test MSE: %.3f' % mse)
