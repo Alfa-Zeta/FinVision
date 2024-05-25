@@ -1,351 +1,758 @@
-#Import .csv File containing Financial Data
 import csv
-with open('C:/Users/91891/OneDrive/Desktop/FINDAT 16-24 - FINAL DATASET.csv', newline='') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        print(row)
-
-#Import necessary libraries
-import csv
-import pandas as pd
-
-#Import.csv File containing Financial Data
-data = pd.read_csv('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv')
-import csv
-
-import pandas as pd
-
-# Load the dataset
-data = pd.read_csv('C:/Users/91891/OneDrive/Desktop/FINDAT 16-24 - FINAL DATASET.csv')
-
-# Slice the DataFrame from row 2 to the end
-data = data.iloc[1:, :]
-
-# Display the first 5 rows of the sliced DataFrame
-print(data.head())
-
-print(data)
-
-#Convert the Date column to a float variable
-import pandas as pd
-
-# load the CSV file into a DataFrame
-data = pd.read_csv('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv')
-
-# print the column names
-print(data.columns)
-
-# access the 'row[1:]' column
-if 'row' in data and not isinstance(data['row'], (list, tuple)):
-    data['row'] = [data['row']]
-
-
-print("STEP-1 COMPLETE")
-
-
-import pandas as pd
-
-file_path = "C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"
-data = pd.read_csv(file_path, skiprows=1)
-
-# Ensure the 'Date' column exists before attempting to convert
-if 'Date' in data.columns:
-    data['Date'] = pd.to_numeric(data['Date'], errors='coerce')
-    # Handle potential NaN values resulting from coercion
-    data['Date'].fillna(data['Date'].mean(), inplace=True)  # or some other suitable fill method
-else:
-    print("Warning: 'Date' column not found in the data.")
-
-#Print the first 5 rows of the cleaned data
-print(data.head())
-
-#Import.csv File containing Financial Data
-data = pd.read_csv('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv')
-
-#Remove any rows with missing values
-data = data.dropna()
-
-#Convert categorical variables into dummy/indicator variables
-data = pd.get_dummies(data)
-
-#Print the first 5 rows of the cleaned data
-print(data.head())
-# Convert string to float
-def convert_string_to_float(x):
-    try:
-        return float(x.strip())
-    except ValueError:
-        return np.nan
-import csv
-
-# Open the CSV file and read its contents
-with open('C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv', 'r') as csvfile:
-    # Create a CSV reader object
-    csvreader = csv.reader(csvfile)
-
-    # Loop through each row in the CSV file
-    for row in csvreader:
-# Convert the string to a float and store it in a variable
-        def convert_value_to_float(row):
-            try:
-                return float(row[0].strip())
-            except ValueError:
-                print(f"Error: Cannot convert '{row[0]}' to float.")
-                return None  # or some other default value
-print("STEP-2 COMPLETE")
-
-input_string = "C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"
-def convert_string_to_float(x):
-    try:
-        return float(x.strip())
-    except ValueError:
-        return 0.0  # or some other default value
-#Clean Data
-import pandas as pd
-data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-data.dropna(inplace=True)
-data.drop_duplicates(inplace=True)
-data = data.applymap(lambda x: x.lower() if isinstance(x, str) else x)
-data = data.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-data.to_csv("cleaned_data.csv", index=False)
-#Differencing
-import pandas as pd
-data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-import pandas as pd
-df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-df = pd.get_dummies(df, drop_first=True)
-df = df.fillna(df.mean())
-from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
-df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
-
-print("STEP-3 COMPLETE")
-
-import pandas as pd
-from sklearn.preprocessing import MinMaxScaler
-
-# Load the dataset from the file path
-df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-
-def scale_dataframe(df):
-    if not isinstance(df, pd.DataFrame):
-        raise TypeError("Input must be a DataFrame.")
-    scaler = MinMaxScaler()
-    return pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
-df_scaled = scale_dataframe(df)
-
-y = df_scaled['Shares Traded']
-X = df_scaled.drop('Shares Traded', axis=1)
-
-print("STEP-4 COMPLETE")
-
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 
-X_1d = X.values.reshape(-1)
-
-def convert_string_to_float(x: str) -> float:
+def load_data(file_path):
     """
-    Convert a string to a float, returning NaN on failure.
+    Loads data from a CSV file and returns it as a numpy array.
     """
-    try:
-        return float(x.strip())
-    except ValueError:
-        return np.nan
+    with open(file_path, 'r') as f:
+        reader = csv.reader(f)
+        next(reader)  # Skip header row
+        data = np.array(list(reader)).astype(float)
+    return data
 
+def train_model(data):
+    """
+    Trains a linear regression model on the given data.
+    """
+    X = data[:, :-1]
+    y = data[:, -1]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    return model
 
-#Converts the first element of a row to a float.
-#If the conversion is not possible, prints an error message and returns None.
+def predict_trend(model, data):
+    """
+    Uses the trained model to predict the expected future trend based on the given data.
+    """
+    prediction = model.predict(data)
+    return prediction
 
-    try:
-        return float(row[0].strip())
-    except ValueError:
-        print(f"Error: Cannot convert '{row[0]}' to float.")
-        return None  # or some other default value
+def main():
+    print("Welcome to the AI Model User Interface!")
+    file_path = input("Please enter the path to your CSV file: ")
+    data = load_data(file_path)
+    model = train_model(data)
+    future_data = input("Please enter the future data points as a comma-separated list: ").split(',')
+    future_data = np.array(future_data).astype(float).reshape(-1, 1)
+    prediction = predict_trend(model, future_data)
+    print(f"The expected future trend is: {prediction}")
 
-        def skip_first_column(data):
-#Skips the first column of each row in the input data.
-
-            if not isinstance(data, list):
-                raise TypeError("Input data must be a list.")
-            for row in data:
-                if not isinstance(row, list):
-                    raise TypeError(f"Each element in data must be a list. Found non-list element: {row}")
-            return [row[1:] for row in data if row]
-# Import necessary libraries0
-
-import pandas as pd
-import numpy as np
-
-# Load the data into a DataFrame
-df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-df = df.applymap(convert_string_to_float)
-
-#Preprocess for modelling
-import pandas as pd
-data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-data['Date'] = pd.to_datetime(data['Date'])
-data.set_index('Date', inplace=True)
-
-#Introduce Modelling system ARIMA
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from statsmodels.tsa.arima_model import ARIMA
-from sklearn.metrics import mean_squared_error
-
-data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv", index_col='Date', parse_dates=True)
-
-# Check for any missing values
-if data.isnull().values.any():
-    print("Data contains missing values. Please handle them before proceeding.")
-else:
-    print("Data does not contain any missing values.")
-
-if data.duplicated().any():
-    print("Data contains duplicate values. Please handle them before proceeding.")
-else:
-    print("Data does not contain any duplicate values.")
-
-# Check for any outliers
-q1 = data.quantile(0.25)
-q3 = data.quantile(0.75)
-iqr = q3 - q1
-lower_bound = q1 - 1.5 * iqr
-upper_bound = q3 + 1.5 * iqr
-
-if data[(data < lower_bound) | (data > upper_bound)].any().any():
-    print("Data contains outliers. Please handle them before proceeding.")
-else:
-    print("Data does not contain any outliers.")
-
-from statsmodels.tsa.stattools import adfuller
-
-def test_stationarity(timeseries):
-    print('Results of Dickey-Fuller Test:')
-    dftest = adfuller(timeseries, autolag='AIC')
-    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
-    for key, value in dftest[4].items():
-        dfoutput['Critical Value (%s)' % key] = value
-    print(dfoutput)
-
-test_stationarity(data)
-
-if data[0]!= 0:
-    data_diff = data.diff().dropna()
-    test_stationarity(data_diff)
-else:
-    print("Data is already stationary.")
-
-# Train the ARIMA model
-model = ARIMA(data_diff, order=(5,1,0))
-model_fit = model.fit()
-
-data_diff = ["C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"] 
-test = ["C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"]   
-
-total_length = len(data_diff) + len(test)
-
-# Make predictions
-predictions = model_fit.predict(
-    start=len(data_diff), 
-    end=len(data_diff) + len(test), 
-    typ='levels'
-)
-
-# Evaluate the model
-from sklearn.metrics import mean_squared_error
-mse = mean_squared_error(y_true=test, y_pred=predictions)
-print(f"Test MSE: {mse:.3f}")
-
-#Run Diagnostics on data differencing and Analysis, improve any faults ASAP
-import pandas as pd
-df = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv")
-print(df.head())
+if __name__ == "__main__":
+    main()
 # Import necessary libraries
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot
-from statsmodels.tsa.arima_model import ARIMA
-from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+import joblib
 
-
-data = pd.read_csv("C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv", index_col='Date', parse_dates=True)
-print("Missing values: ", data.isnull().sum())
-differenced_data = data.diff().dropna()
-model = ARIMA(differenced_data, order=(5,1,0))
-model_fit = model.fit()
-
-predictions = model_fit.forecast(steps=len(test))
-mse = mean_squared_error(y_true=test, y_pred=predictions)
-print(f"Test MSE: {mse:.3f}")
-
-# Plot the original data and the predictions to visually inspect the fit
-pyplot.plot(data)
-pyplot.plot(predictions, color='red')
-pyplot.show()
-
-# Load the dataset
 import pandas as pd
 
-file_path = "C:\\Users\\91891\\OneDrive\\Desktop\\codin\\cleaned_data.csv"
-data = pd.read_csv(file_path, index_col='Date', parse_dates=True)
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    df = pd.read_csv(file_path)
+    return df
 
-if data.isnull().values.any():
-    print("Data contains missing values. Please handle them before proceeding.")
-else:
-    print("Data does not contain any missing values.")
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
 
-# Check for any duplicate values
-if data.duplicated().any():
-    print("Data contains duplicate values. Please handle them before proceeding.")
-else:
-    print("Data does not contain any duplicate values.")
+# Slice the DataFrame from row 2 to the end
+sliced_df = data.iloc[2:, :]
+print("Sliced DataFrame:")
+print(sliced_df)
 
-# Check for any outliers
-q1 = data.quantile(0.25)
-q3 = data.quantile(0.75)
-iqr = q3 - q1
-lower_bound = q1 - 1.5 * iqr
-upper_bound = q3 + 1.5 * iqr
+import pandas as pd
 
-if data[(data < lower_bound) | (data > upper_bound)].any().any():
-    print("Data contains outliers. Please handle them before proceeding.")
-else:
-    print("Data does not contain any outliers.")
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    df = pd.read_csv(file_path)
+    if 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'])
+    else:
+        print("The 'Date' column does not exist in the CSV file.")
+    return df
 
-# Check for stationarity
-        #Import Statsmodels using something i dont know about
-import statsmodels
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.stattools import adfuller
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
 
-def test_stationarity(timeseries):
-    print('Results of Dickey-Fuller Test:')
-    dftest = adfuller(timeseries, autolag='AIC')
-    dfoutput = pd.Series(dftest[0:4], index=['Test Statistic', 'p-value', '#Lags Used', 'Number of Observations Used'])
-    for key, value in dftest[4].items():
-        dfoutput['Critical Value (%s)' % key] = value
-    print(dfoutput)
+# Slice the DataFrame from row 2 to the end
+sliced_df = data.iloc[2:, :]
+print("Sliced DataFrame:")
+print(sliced_df)
 
-test_stationarity(data)
+import pandas as pd
 
-# If the data is not stationary, perform differencing
-if data[0]!= 0:
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    df = pd.read_csv(file_path)
+    if 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'])
+    else:
+        print("The 'Date' column does not exist in the CSV file.")
+    return df
+
+def clean_data(data):
+    """
+    Cleans the dataset by removing any rows with missing values.
+    """
+    data.dropna(inplace=True)
+    return data
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+# Clean the dataset
+cleaned_data = clean_data(data)
+
+# Slice the DataFrame from row 2 to the end
+sliced_df = cleaned_data.iloc[2:, :]
+print("Sliced DataFrame:")
+print(sliced_df)
+
+import pandas as pd
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    df = pd.read_csv(file_path)
+    if 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'])
+    else:
+        print("The 'Date' column does not exist in the CSV file.")
+    return df
+
+def clean_data(data):
+    """
+    Cleans the dataset by removing any rows with missing values.
+    """
+    data.dropna(inplace=True)
+    return data
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
     data_diff = data.diff().dropna()
-    test_stationarity(data_diff)
+    return data_diff
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+# Clean the dataset
+cleaned_data = clean_data(data)
+
+# Difference the dataset
+diff_data = difference_data(cleaned_data)
+
+# Slice the DataFrame from row 2 to the end
+sliced_df = diff_data.iloc[2:, :]
+print("Sliced DataFrame:")
+print(sliced_df)
+
+import pandas as pd
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    df = pd.read_csv(file_path)
+    if 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'])
+    else:
+        print("The 'Date' column does not exist in the CSV file.")
+    return df
+
+def clean_data(data):
+    """
+    Cleans the dataset by removing any rows with missing values.
+    """
+    data.dropna(inplace=True)
+    return data
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
+
+def convert_to_float(data):
+    """
+    Converts each element in the dataset to a float.
+    """
+    data = data.astype(float)
+    return data
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+# Clean the dataset
+cleaned_data = clean_data(data)
+
+# Difference the dataset
+diff_data = difference_data(cleaned_data)
+
+# Convert each element to a float
+float_data = convert_to_float(diff_data)
+
+# Slice the DataFrame from row 2 to the end
+sliced_df = float_data.iloc[2:, :]
+print("Sliced DataFrame:")
+print(sliced_df)
+
+import pandas as pd
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    print("Data:")
+    print(data)
 else:
-    print("Data is already stationary.")
+    print("Failed to load data.")
 
-# Train the ARIMA model
-model = ARIMA(data_diff, order=(5,1,0))
-model_fit = model.fit()
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima_model import ARIMA
+import matplotlib.pyplot as plt
 
-# Make predictions
-predictions = model_fit.predict(start=len(data_diff), end=len(data_diff)+len(test), typ='levels')
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
 
-# Evaluate the model
-from sklearn.metrics import mean_squared_error
-mse = mean_squared_error(test, predictions)
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
 
-print('Test MSE: %.3f' % mse)
+def train_model(data):
+    """
+    Trains an ARIMA model on the given data.
+    """
+    model = ARIMA(data, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    return model_fit
+
+def predict_trend(model, data):
+    """
+    Uses the trained model to predict the expected future trend based on the given data.
+    """
+    prediction = model.predict(n_periods=len(data))
+    return prediction
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Clean the dataset
+    cleaned_data = data.dropna()
+
+    # Difference the dataset
+    diff_data = difference_data(cleaned_data)
+
+    # Train the ARIMA model
+    model = train_model(diff_data)
+
+    # Predict the trend
+    prediction = predict_trend(model, diff_data)
+
+    # Plot the original data and the predicted trend
+    plt.plot(diff_data)
+    plt.plot(prediction, color='red')
+    plt.show()
+
+else:
+    print("Failed to load data.")
+
+import pandas as pd
+import numpy as np
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+def check_missing_values(data):
+    """
+    Checks for missing values in the dataset.
+    """
+    print("Missing values:")
+    print(data.isnull().sum())
+
+def check_outliers(data):
+    """
+    Checks for outliers in the dataset.
+    """
+    Q1 = data.quantile(0.25)
+    Q3 = data.quantile(0.75)
+    IQR = Q3 - Q1
+    print("Outliers:")
+    print(data[(data < (Q1 - 1.5 * IQR)) | (data > (Q3 + 1.5 * IQR))])
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Check for missing values
+    check_missing_values(data)
+
+    # Check for outliers
+    check_outliers(data)
+
+else:
+    print("Failed to load data.")
+
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima_model import ARIMA
+import matplotlib.pyplot as plt
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
+
+def train_model(data):
+    """
+    Trains an ARIMA model on the given data.
+    """
+    model = ARIMA(data, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    return model_fit
+
+def make_predictions(model, data, n_steps):
+    """
+    Uses the trained model to make predictions for the given number of steps.
+    """
+    predictions = model.predict(n_steps)
+    return predictions
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Clean the dataset
+    cleaned_data = data.dropna()
+
+    # Difference the dataset
+    diff_data = difference_data(cleaned_data)
+
+    # Train the ARIMA model
+    model = train_model(diff_data)
+
+    # Make predictions for the next 30 steps
+    predictions = make_predictions(model, diff_data, 30)
+
+    # Plot the original data and the predicted values
+    plt.plot(diff_data)
+    plt.plot(predictions, color='red')
+    plt.show()
+
+else:
+    print("Failed to load data.")
+
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima_model import ARIMA
+import matplotlib.pyplot as plt
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
+
+def train_model(data):
+    """
+    Trains an ARIMA model on the given data.
+    """
+    model = ARIMA(data, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    return model_fit
+
+def make_predictions(model, data, n_steps):
+    """
+    Uses the trained model to make predictions for the given number of steps.
+    """
+    predictions = model.predict(n_steps)
+    return predictions
+
+def evaluate_model(model, data):
+    """
+    Evaluates the model by calculating the mean absolute error (MAE) and the root mean squared error (RMSE).
+    """
+    y_true = data
+    y_pred = model.predict(len(y_true))
+    mae = np.mean(np.abs(y_true - y_pred))
+    rmse = np.sqrt(np.mean((y_true - y_pred)**2))
+    print("MAE:", mae)
+    print("RMSE:", rmse)
+
+def run_diagnostics(model, data):
+    """
+    Runs diagnostics on the model by plotting the residuals and the autocorrelation function (ACF) of the residuals.
+    """
+    residuals = model.resid
+    plt.figure(figsize=(12,6))
+    plt.subplot(121)
+    plt.plot(residuals)
+    plt.title("Residuals")
+    plt.subplot(122)
+    plt.acf(residuals, lags=30)
+    plt.title("Autocorrelation function (ACF) of the residuals")
+    plt.show()
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Clean the dataset
+    cleaned_data = data.dropna()
+
+    # Difference the dataset
+    diff_data = difference_data(cleaned_data)
+
+    # Train the ARIMA model
+    model = train_model(diff_data)
+
+    # Make predictions for the next 30 steps
+    predictions = make_predictions(model, diff_data, 30)
+
+    # Evaluate the model
+    evaluate_model(model, diff_data)
+
+    # Run diagnostics on the model
+    run_diagnostics(model, diff_data)
+
+else:
+    print("Failed to load data.")
+
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima_model import ARIMA
+import matplotlib.pyplot as plt
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
+
+def train_model(data):
+    """
+    Trains an ARIMA model on the given data.
+    """
+    model = ARIMA(data, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    return model_fit
+
+def make_predictions(model, data, n_steps):
+    """
+    Uses the trained model to make predictions for the given number of steps.
+    """
+    predictions = model.predict(n_steps)
+    return predictions
+
+def plot_original_data_and_predictions(data, predictions):
+    """
+    Plots the original data and the predictions to visually inspect the fit.
+    """
+    plt.figure(figsize=(12,6))
+    plt.plot(data, label='Original data')
+    plt.plot(predictions, label='Predictions')
+    plt.legend(loc='best')
+    plt.title("Original data and predictions")
+    plt.show()
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Clean the dataset
+    cleaned_data = data.dropna()
+
+    # Difference the dataset
+    diff_data = difference_data(cleaned_data)
+
+    # Train the ARIMA model
+    model = train_model(diff_data)
+
+    # Make predictions for the next 30 steps
+    predictions = make_predictions(model, diff_data, 30)
+
+    # Plot the original data and the predictions
+    plot_original_data_and_predictions(diff_data, predictions)
+
+else:
+    print("Failed to load data.")
+
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.arima_model import ARIMA
+import matplotlib.pyplot as plt
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+def check_stationarity(data):
+    """
+    Checks for stationarity using the Augmented Dickey-Fuller test.
+    """
+    result = adfuller(data)
+    print('ADF Statistic: %f' % result[0])
+    print('p-value: %f' % result[1])
+    print('Critical Values:')
+    for key, value in result[4].items():
+        print('\t%s: %.3f' % (key, value))
+    if result[1] > 0.05:
+        print("Data is not stationary")
+        return False
+    else:
+        print("Data is stationary")
+        return True
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
+
+def train_model(data):
+    """
+    Trains an ARIMA model on the given data.
+    """
+    model = ARIMA(data, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    return model_fit
+
+def evaluate_model(model, data):
+    """
+    Evaluates the model by calculating the mean absolute error (MAE) and the root mean squared error (RMSE).
+    """
+    y_true = data
+    y_pred = model.predict(len(y_true))
+    mae = np.mean(np.abs(y_true - y_pred))
+    rmse = np.sqrt(np.mean((y_true - y_pred)**2))
+    print("MAE:", mae)
+    print("RMSE:", rmse)
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Check for stationarity
+    is_stationary = check_stationarity(data)
+
+    # If the data is not stationary, perform differencing
+    if not is_stationary:
+        data = difference_data(data)
+
+    # Train the ARIMA model
+    model = train_model(data)
+
+    # Evaluate the model
+    evaluate_model(model, data)
+
+else:
+    print("Failed to load data.")
+
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.arima_model import ARIMA
+import matplotlib.pyplot as plt
+
+def load_data(file_path):
+    """
+    Loads data from a CSV file into a Pandas DataFrame.
+    """
+    try:
+        df = pd.read_csv(file_path)
+        print("Data loaded successfully!")
+        return df
+    except FileNotFoundError:
+        print("Error: File not found. Please check the file path.")
+        return None
+
+def check_stationarity(data):
+    """
+    Checks for stationarity using the Augmented Dickey-Fuller test.
+    """
+    result = adfuller(data)
+    print('ADF Statistic: %f' % result[0])
+    print('p-value: %f' % result[1])
+    print('Critical Values:')
+    for key, value in result[4].items():
+        print('\t%s: %.3f' % (key, value))
+    if result[1] > 0.05:
+        print("Data is not stationary")
+        return False
+    else:
+        print("Data is stationary")
+        return True
+
+def difference_data(data):
+    """
+    Differences the dataset by subtracting the previous value from the current value.
+    """
+    data_diff = data.diff().dropna()
+    return data_diff
+
+def train_model(data):
+    """
+    Trains an ARIMA model on the given data.
+    """
+    model = ARIMA(data, order=(5,1,0))
+    model_fit = model.fit(disp=0)
+    return model_fit
+
+def evaluate_model(model, data):
+    """
+    Evaluates the model by calculating the mean absolute error (MAE) and the root mean squared error (RMSE).
+    """
+    y_true = data
+    y_pred = model.predict(len(y_true))
+    mae = np.mean(np.abs(y_true - y_pred))
+    rmse = np.sqrt(np.mean((y_true - y_pred)**2))
+    print("MAE:", mae)
+    print("RMSE:", rmse)
+    return mae, rmse
+
+def train_model_until_perfect(data, max_iterations=100):
+    """
+    Trains the ARIMA model on the given data until the model is perfect.
+    """
+    for i in range(max_iterations):
+        # Check for stationarity
+        is_stationary = check_stationarity(data)
+
+        # If the data is not stationary, perform differencing
+        if not is_stationary:
+            data = difference_data(data)
+
+        # Train the ARIMA model
+        model = train_model(data)
+
+        # Evaluate the model
+        mae, rmse = evaluate_model(model, data)
+
+        # If the model is perfect, break the loop
+        if mae < 1 and rmse < 1:
+            print("Model is perfect!")
+            break
+
+# Load the DataFrame from the user-provided file path
+file_path = input("Please enter the path to your CSV file: ")
+data = load_data(file_path)
+
+if data is not None:
+    # Train the ARIMA model until it's perfect
+    train_model_until_perfect(data)
+
+else:
+    print("Failed to load data.")
+
+print("process complete")
